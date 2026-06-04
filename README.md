@@ -1,7 +1,5 @@
 <div align="center">
-  <div style="display:inline-block; background:#7c3aed; padding:20px; border-radius:24px;">
-    <img src="docs/assets/book-icon.png" width="300" />
-  </div>
+  <img src="docs/assets/book-icon-with-background.png" width="300" style="border-radius:24px;" />
 </div>
 
 <br>
