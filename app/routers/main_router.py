@@ -4,11 +4,18 @@ from app.config import templater
 main_router = APIRouter()
 
 @main_router.get("/")
-async def home(request: Request):
+async def login(request: Request):
     return templater.TemplateResponse(
         request=request,
-        name="index.html",
-        context={
-            "message": "lol"
-        }
+        name="login.html",
+        context={},
+    )
+
+
+@main_router.get("/cadastro")
+async def register(request: Request):
+    return templater.TemplateResponse(
+        request=request,
+        name="register.html",
+        context={},
     )

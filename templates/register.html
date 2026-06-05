@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — QuestõesPro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', path='css/login.css') }}" rel="stylesheet" />
+</head>
+<body class="login-page register-page">
+  <header class="login-header">
+    <div class="login-logo" aria-hidden="true">
+      <i class="bi bi-book"></i>
+    </div>
+    <h1>QuestõesPro</h1>
+    <p>Comece sua preparação hoje mesmo</p>
+  </header>
+
+  <main class="login-card register-card" role="main">
+    <h2>Criar conta gratuita</h2>
+
+    <form action="#" method="post" novalidate>
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Nome completo</label>
+        <div class="input-group-icon">
+          <i class="bi bi-person input-icon" aria-hidden="true"></i>
+          <input
+            type="text"
+            class="form-control no-toggle"
+            id="fullName"
+            name="full_name"
+            placeholder="Seu nome completo"
+            autocomplete="name"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <div class="input-group-icon">
+          <i class="bi bi-envelope input-icon" aria-hidden="true"></i>
+          <input
+            type="email"
+            class="form-control no-toggle"
+            id="email"
+            name="email"
+            placeholder="seu@email.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="phone" class="form-label">Telefone <span class="label-optional">(opcional)</span></label>
+        <div class="input-group-icon">
+          <i class="bi bi-telephone input-icon" aria-hidden="true"></i>
+          <input
+            type="tel"
+            class="form-control no-toggle"
+            id="phone"
+            name="phone"
+            placeholder="(00) 00000-0000"
+            autocomplete="tel"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Senha</label>
+        <div class="input-group-icon">
+          <i class="bi bi-lock input-icon" aria-hidden="true"></i>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Mínimo 6 caracteres"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            data-target="password"
+            aria-label="Mostrar senha"
+            title="Mostrar senha"
+          >
+            <i class="bi bi-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirmar senha</label>
+        <div class="input-group-icon">
+          <i class="bi bi-lock input-icon" aria-hidden="true"></i>
+          <input
+            type="password"
+            class="form-control"
+            id="confirmPassword"
+            name="confirm_password"
+            placeholder="Repita sua senha"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            data-target="confirmPassword"
+            aria-label="Mostrar senha"
+            title="Mostrar senha"
+          >
+            <i class="bi bi-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="terms-check mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="terms" name="terms" required />
+          <label class="form-check-label" for="terms">
+            Concordo com os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-login">Criar conta</button>
+    </form>
+
+    <div class="login-divider" aria-hidden="true">
+      <span>ou</span>
+    </div>
+
+    <p class="login-signup">
+      Já tem uma conta?
+      <a href="/">Entrar agora</a>
+    </p>
+  </main>
+
+  <footer class="login-footer">
+    © 2026 QuestõesPro. Todos os direitos reservados.
+  </footer>
+
+  <button type="button" class="help-fab" aria-label="Ajuda" title="Ajuda">?</button>
+
+  <script>
+    document.querySelectorAll(".toggle-password").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var input = document.getElementById(btn.getAttribute("data-target"));
+        var icon = btn.querySelector("i");
+        if (!input || !icon) return;
+
+        var show = input.type === "password";
+        input.type = show ? "text" : "password";
+        icon.classList.toggle("bi-eye", !show);
+        icon.classList.toggle("bi-eye-slash", show);
+        btn.setAttribute("aria-label", show ? "Ocultar senha" : "Mostrar senha");
+        btn.setAttribute("title", show ? "Ocultar senha" : "Mostrar senha");
+      });
+    });
+  </script>
+</body>
+</html>
