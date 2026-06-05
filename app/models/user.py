@@ -1,6 +1,7 @@
-from database import Base
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.sql import func
+
+from app.database import Base
 
 
 class User(Base):
@@ -8,7 +9,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    nome_completo = Column(String(255), nullable=False)
+    full_name = Column(String(255), nullable=False)
 
     username = Column(String(50), unique=True, index=True, nullable=False)
 
@@ -16,9 +17,9 @@ class User(Base):
 
     password_hash = Column(String(255), nullable=False)
 
-    descricao = Column(Text, nullable=True)
+    description = Column(Text, nullable=True)
 
-    imagem_perfil_s3_key = Column(String(512), nullable=True)
+    profile_picture_s3_key = Column(String(512), nullable=True)
 
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
