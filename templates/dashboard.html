@@ -25,6 +25,25 @@
         <main class="container py-5">
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <img
+                            id="profileImage"
+                            src="https://placehold.co/96x96?text=?"
+                            alt="Foto de perfil"
+                            class="rounded-circle border"
+                            style="width: 96px; height: 96px; object-fit: cover"
+                        />
+
+                        <div>
+                            <h1 class="h4 mb-1" id="headerFullName">
+                                Carregando...
+                            </h1>
+
+                            <p class="text-muted mb-0" id="headerUsername">
+                                @usuario
+                            </p>
+                        </div>
+                    </div>
                     <h1 class="h4">Dashboard</h1>
 
                     <p class="mb-1">
@@ -94,10 +113,22 @@
 
                 document.getElementById("fullName").textContent =
                     user.full_name;
+
                 document.getElementById("username").textContent = user.username;
+
+                document.getElementById("headerFullName").textContent =
+                    user.full_name;
+
+                document.getElementById("headerUsername").textContent =
+                    "@" + user.username;
                 document.getElementById("email").textContent = user.email;
                 document.getElementById("description").textContent =
                     user.description || "Sem descrição";
+
+                if (user.profile_picture_url) {
+                    document.getElementById("profileImage").src =
+                        user.profile_picture_url;
+                }
             }
 
             document
@@ -118,13 +149,16 @@
                     const formData = new FormData();
                     formData.append("file", fileInput.files[0]);
 
-                    const response = await fetch("/users/me/profile-picture", {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
+                    const response = await fetch(
+                        "/users/me/upload-profile-picture",
+                        {
+                            method: "POST",
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: formData,
                         },
-                        body: formData,
-                    });
+                    );
 
                     if (!response.ok) {
                         message.textContent = "Erro ao enviar imagem";

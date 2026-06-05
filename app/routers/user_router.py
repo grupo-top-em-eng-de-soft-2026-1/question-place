@@ -15,7 +15,7 @@ def me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@user_router.post("/me/profile-picture", response_model=UserResponse)
+@user_router.post("/me/upload-profile-picture", response_model=UserResponse)
 async def upload_picture(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
