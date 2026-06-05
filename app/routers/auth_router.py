@@ -46,14 +46,24 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
 
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
         )
 
     if not verify_password(payload.password, user.password_hash):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
         )
 
-    access_token = create_access_token({"sub": str(user.id), "username": user.username})
+    access_token = create_access_token(
+        {
+            "sub": str(user.id),
+            "username": user.username,
+        }
+    )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
