@@ -1,4 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, computed_field
+
+import app.config
 
 
 class UserCreate(BaseModel):
@@ -21,6 +23,14 @@ class UserResponse(BaseModel):
     email: EmailStr
     description: str | None
     profile_picture_s3_key: str | None
+
+    @computed_field
+    @property
+    def profile_picture_url(self) -> str | None:
+        if not self.profile_picture_s3_key:
+            return None
+
+        return f"{app.config.AWS_S3_PUBLIC_BASE_URL}/{self.profile_picture_s3_key}"
 
     class Config:
         from_attributes = True

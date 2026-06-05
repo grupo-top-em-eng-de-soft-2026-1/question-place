@@ -16,6 +16,11 @@ AWS_RDS_DATABASE_URL = os.getenv("AWS_RDS_DATABASE_URL", "")
 
 AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "")
 
+AWS_S3_PUBLIC_BASE_URL = os.getenv(
+    "AWS_S3_PUBLIC_BASE_URL",
+    f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com",
+)
+
 # JWT
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")

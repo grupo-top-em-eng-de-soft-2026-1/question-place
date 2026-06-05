@@ -1,12 +1,27 @@
-from fastapi import UploadFile
+from pathlib import Path
+from uuid import uuid4
+
+from fastapi import HTTPException, UploadFile
 
 import app.config
 
+ALLOWED_CONTENT_TYPES = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+}
+
 
 async def upload_profile_picture(file: UploadFile, user_id: int) -> str:
-    extension = file.filename.split(".")[-1]
+    if file.content_type not in ALLOWED_CONTENT_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Formato inválido. Use JPG, PNG ou WEBP.",
+        )
 
-    s3_key = f"users/{user_id}/profile_picture.{extension}"
+    extension = ALLOWED_CONTENT_TYPES[file.content_type]
+
+    s3_key = f"profile-images/users/{user_id}/{uuid4()}{extension}"
 
     content = await file.read()
 
