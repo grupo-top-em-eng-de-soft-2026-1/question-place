@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.user_schema import UserResponse
+from app.services.jwt_service import get_current_user
 from app.services.s3_service import upload_profile_picture
 
 user_router = APIRouter(prefix="/users", tags=["users"])
