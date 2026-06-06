@@ -20,6 +20,7 @@ class UserUpdate(BaseModel):
     full_name: str | None = Field(default=None, min_length=1, max_length=255)
     username: str | None = Field(default=None, min_length=1, max_length=50)
     email: EmailStr | None = None
+    password: str | None = Field(default=None, min_length=1)
     description: str | None = None
 
     @field_validator("full_name", "username")

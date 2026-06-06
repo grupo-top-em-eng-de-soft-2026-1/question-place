@@ -49,8 +49,9 @@ Retorna o perfil do usuário identificado pela claim `sub` do JWT.
 
 ### `PATCH /users/me`
 
-Atualiza parcialmente nome, username, e-mail e descrição. Username e e-mail
-continuam sujeitos à unicidade.
+Atualiza parcialmente nome, username, e-mail, senha e descrição. Username e
+e-mail continuam sujeitos à unicidade. Quando enviada, a nova senha é
+armazenada como hash bcrypt.
 
 ### `POST /users/me/upload-profile-picture`
 

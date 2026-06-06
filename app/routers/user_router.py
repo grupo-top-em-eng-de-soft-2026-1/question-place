@@ -6,6 +6,7 @@ from app.models.user import User
 from app.schemas.user_schema import UserResponse, UserUpdate
 from app.services.jwt_service import get_current_user
 from app.services.s3_service import upload_profile_picture
+from app.services.security_service import hash_password
 
 user_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -57,8 +58,13 @@ def update_me(
         if email_exists:
             raise HTTPException(status_code=400, detail="Email already exists")
 
+    password = changes.pop("password", None)
+
     for field, value in changes.items():
         setattr(current_user, field, value)
+
+    if password is not None:
+        current_user.password_hash = hash_password(password)
 
     db.commit()
     db.refresh(current_user)

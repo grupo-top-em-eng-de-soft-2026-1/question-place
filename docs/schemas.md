@@ -53,6 +53,7 @@ atualização parcial.
 | `full_name` | 1 a 255 caracteres após remover espaços externos |
 | `username` | 1 a 50 caracteres após remover espaços externos |
 | `email` | e-mail válido |
+| `password` | string não vazia; é armazenada somente como hash |
 | `description` | string ou `null` |
 
 Quando enviados, `full_name`, `username` e `email` não podem ser `null`.
