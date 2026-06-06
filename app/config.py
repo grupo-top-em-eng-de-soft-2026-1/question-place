@@ -1,12 +1,25 @@
-# app/config.py
-
 import os
 
 import boto3
-import dotenv
 from fastapi.templating import Jinja2Templates
 
-dotenv.load_dotenv()
+# ENV
+
+ENV = os.getenv("ENV", "prod")
+
+ENV_DOCS_URL = None
+ENV_REDOC_URL = None
+ENV_OPENAPI_URL = None
+
+match ENV:
+    case "prod":
+        ENV_DOCS_URL = None
+        ENV_REDOC_URL = None
+        ENV_OPENAPI_URL = None
+    case "test":
+        ENV_DOCS_URL = "/docs"
+        ENV_REDOC_URL = "/redoc"
+        ENV_OPENAPI_URL = "/openapi.json"
 
 # AWS
 

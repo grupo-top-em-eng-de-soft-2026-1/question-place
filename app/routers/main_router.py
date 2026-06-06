@@ -20,8 +20,15 @@ async def register_page(request: Request):
     return templater.TemplateResponse(request=request, name="register.html", context={})
 
 
-@main_router.get("/dashboard")
-async def dashboard_page(request: Request):
+@main_router.get("/me")
+async def me_page(request: Request):
     return templater.TemplateResponse(
-        request=request, name="dashboard.html", context={}
+        request=request, name="me.html", context={}
+    )
+
+
+@main_router.get("/me/edit")
+async def edit_profile_page(request: Request):
+    return templater.TemplateResponse(
+        request=request, name="edit_profile.html", context={}
     )

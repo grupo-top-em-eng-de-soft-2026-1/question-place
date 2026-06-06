@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dashboard — QuestõesPro</title>
+        <title>Dashboard - QuestionPlace</title>
 
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -14,7 +14,7 @@
     <body class="bg-light">
         <nav class="navbar navbar-dark bg-primary">
             <div class="container">
-                <span class="navbar-brand">QuestõesPro</span>
+                <span class="navbar-brand">QuestionPlace</span>
 
                 <button id="logoutButton" class="btn btn-light btn-sm">
                     Sair
@@ -44,47 +44,35 @@
                             </p>
                         </div>
                     </div>
-                    <h1 class="h4">Dashboard</h1>
+                    <div
+                        class="d-flex align-items-center justify-content-between gap-3 mb-3"
+                    >
+                        <h1 class="h4 mb-0">Dashboard</h1>
 
-                    <p class="mb-1">
+                        <a href="/me/edit" class="btn btn-primary">
+                            Editar perfil
+                        </a>
+                    </div>
+
+                    <p class="mb-2">
                         <strong>Nome:</strong>
                         <span id="fullName"></span>
                     </p>
 
-                    <p class="mb-1">
+                    <p class="mb-2">
                         <strong>Username:</strong>
                         <span id="username"></span>
                     </p>
 
-                    <p class="mb-1">
+                    <p class="mb-2">
                         <strong>Email:</strong>
                         <span id="email"></span>
                     </p>
 
-                    <p class="mb-3">
+                    <p class="mb-0">
                         <strong>Descrição:</strong>
                         <span id="description"></span>
                     </p>
-
-                    <hr />
-
-                    <h2 class="h5">Imagem de perfil</h2>
-
-                    <form id="profilePictureForm">
-                        <input
-                            type="file"
-                            class="form-control mb-3"
-                            id="profilePicture"
-                            accept="image/*"
-                            required
-                        />
-
-                        <button class="btn btn-primary" type="submit">
-                            Enviar imagem
-                        </button>
-                    </form>
-
-                    <p id="message" class="mt-3"></p>
                 </div>
             </div>
         </main>
@@ -136,40 +124,6 @@
                 .addEventListener("click", function () {
                     localStorage.removeItem("access_token");
                     window.location.href = "/";
-                });
-
-            document
-                .getElementById("profilePictureForm")
-                .addEventListener("submit", async function (event) {
-                    event.preventDefault();
-
-                    const fileInput = document.getElementById("profilePicture");
-                    const message = document.getElementById("message");
-
-                    const formData = new FormData();
-                    formData.append("file", fileInput.files[0]);
-
-                    const response = await fetch(
-                        "/users/me/upload-profile-picture",
-                        {
-                            method: "POST",
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                            body: formData,
-                        },
-                    );
-
-                    if (!response.ok) {
-                        message.textContent = "Erro ao enviar imagem";
-                        message.className = "mt-3 text-danger";
-                        return;
-                    }
-
-                    message.textContent = "Imagem enviada com sucesso";
-                    message.className = "mt-3 text-success";
-
-                    loadUser();
                 });
 
             loadUser();

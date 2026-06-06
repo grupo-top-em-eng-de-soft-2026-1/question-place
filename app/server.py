@@ -1,3 +1,5 @@
+import app.config
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -6,7 +8,12 @@ from app.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    title= "Question Place",
+    docs_url= app.config.ENV_DOCS_URL,
+    redoc_url= app.config.ENV_REDOC_URL,
+    openapi_url= app.config.ENV_OPENAPI_URL
+)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
