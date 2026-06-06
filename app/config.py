@@ -16,16 +16,16 @@ match ENV:
         ENV_DOCS_URL = None
         ENV_REDOC_URL = None
         ENV_OPENAPI_URL = None
-    case "test":
+    case "local":
         ENV_DOCS_URL = "/docs"
         ENV_REDOC_URL = "/redoc"
         ENV_OPENAPI_URL = "/openapi.json"
 
-# AWS
+# DATABASE AND STORAGE
+
+DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-
-AWS_RDS_DATABASE_URL = os.getenv("AWS_RDS_DATABASE_URL", "")
 
 AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "")
 

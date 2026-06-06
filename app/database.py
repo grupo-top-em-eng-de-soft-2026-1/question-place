@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 import app.config
 
-engine = create_engine(app.config.AWS_RDS_DATABASE_URL)
+engine = create_engine(app.config.DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

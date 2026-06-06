@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    container_name: question-place
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/question_place
