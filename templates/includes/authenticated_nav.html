@@ -1,0 +1,11 @@
+<nav class="{{ nav_class|default('navbar navbar-dark bg-primary') }}">
+    <div class="{{ nav_container_class|default('container') }}">
+        <a class="navbar-brand text-decoration-none{% if nav_brand_bold %} fw-bold{% endif %}" href="{{ nav_brand_href|default('/library') }}">
+            {% if nav_brand_icon %}<i class="bi bi-book-half me-2"></i>{% endif %}Question Place
+        </a>
+        <div>
+            {% if nav_profile_link %}<a class="btn btn-sm btn-outline-light me-2" href="/me">Meu perfil</a>{% endif %}
+            <button id="{{ logout_button_id|default('logoutButton') }}" class="btn btn-sm btn-light">Sair</button>
+        </div>
+    </div>
+</nav>

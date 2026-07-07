@@ -1,8 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field, computed_field, field_validator
-
-import app.config
-from app.services.s3_service import create_presigned_url
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
 
 class UserCreate(BaseModel):
@@ -45,18 +42,28 @@ class UserResponse(BaseModel):
     username: str
     email: EmailStr
     description: str | None
-    profile_picture_s3_key: str | None
+    profile_picture_url: str | None = None
     created_at: datetime
 
-    @computed_field
-    @property
-    def profile_picture_url(self) -> str | None:
-        if not self.profile_picture_s3_key:
-            return None
-
-        if app.config.AWS_S3_USE_PRESIGNED_URLS:
-            return create_presigned_url(self.profile_picture_s3_key)
-        return f"{app.config.AWS_S3_PUBLIC_BASE_URL}/{self.profile_picture_s3_key}"
+    @model_validator(mode="before")
+    @classmethod
+    def protected_profile_picture_url(cls, value):
+        if isinstance(value, dict):
+            data = dict(value)
+            if "profile_picture_s3_key" in data:
+                key = data.pop("profile_picture_s3_key")
+                data["profile_picture_url"] = "/users/me/profile-image" if key else None
+            return data
+        return {
+            "id": value.id,
+            "full_name": value.full_name,
+            "username": value.username,
+            "email": value.email,
+            "description": value.description,
+            "created_at": value.created_at,
+            "profile_picture_url": "/users/me/profile-image"
+            if value.profile_picture_s3_key else None,
+        }
 
     class Config:
         from_attributes = True

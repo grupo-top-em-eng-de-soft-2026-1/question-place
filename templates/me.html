@@ -1,26 +1,12 @@
 <!doctype html>
 <html lang="pt-BR">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dashboard - QuestionPlace</title>
-
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-        />
+        {% set page_title = "Dashboard" %}
+        {% include "includes/head.html" %}
     </head>
 
     <body class="bg-light">
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand text-decoration-none" href="/library">Question Place</a>
-
-                <button id="logoutButton" class="btn btn-light btn-sm">
-                    Sair
-                </button>
-            </div>
-        </nav>
+        {% include "includes/authenticated_nav.html" %}
 
         <main class="container py-5">
             <div class="card shadow-sm">
@@ -77,6 +63,7 @@
             </div>
         </main>
 
+        <script src="{{ url_for('static', path='js/protected-image.js') }}"></script>
         <script>
             const token = localStorage.getItem("access_token");
 
@@ -114,8 +101,15 @@
                     user.description || "Sem descrição";
 
                 if (user.profile_picture_url) {
-                    document.getElementById("profileImage").src =
-                        user.profile_picture_url;
+                    const imageResponse = await loadProtectedImage(
+                        user.profile_picture_url,
+                        document.getElementById("profileImage"),
+                        token,
+                    );
+                    if (imageResponse.status === 401) {
+                        localStorage.removeItem("access_token");
+                        window.location.href = "/";
+                    }
                 }
             }
 

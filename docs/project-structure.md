@@ -69,7 +69,7 @@ metadados e chaves S3, nunca o conteúdo binário.
 ### `app/schemas`
 
 Define os contratos Pydantic de entrada e saída da API. Essa camada valida
-e-mail, limites dos campos editáveis e calcula a URL pública da foto.
+e-mail, limites dos campos editáveis e expõe somente a rota interna da foto.
 
 ### `app/routers`
 

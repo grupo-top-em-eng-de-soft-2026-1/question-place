@@ -1,10 +1,12 @@
 import logging
+from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
 
 from boto3.exceptions import S3UploadFailedError
 from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import HTTPException, UploadFile
+from PIL import Image, UnidentifiedImageError
 
 import app.config
 
@@ -15,6 +17,12 @@ ALLOWED_CONTENT_TYPES = {
 }
 
 logger = logging.getLogger(__name__)
+
+
+def _is_not_found(exc: ClientError) -> bool:
+    status = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+    code = exc.response.get("Error", {}).get("Code")
+    return status == 404 or code in {"404", "NoSuchKey", "NotFound"}
 
 
 def _bucket() -> str:
@@ -59,7 +67,11 @@ def download_file(key: str, local_path: str | Path) -> None:
 def get_object_stream(key: str) -> dict:
     try:
         return app.config.s3.get_object(Bucket=_bucket(), Key=key)
-    except (BotoCoreError, ClientError) as exc:
+    except ClientError as exc:
+        if _is_not_found(exc):
+            raise HTTPException(404, "Objeto não encontrado") from exc
+        raise _service_error("leitura", exc) from exc
+    except BotoCoreError as exc:
         raise _service_error("leitura", exc) from exc
 
 
@@ -102,9 +114,7 @@ def object_exists(key: str) -> bool:
         app.config.s3.head_object(Bucket=_bucket(), Key=key)
         return True
     except ClientError as exc:
-        status = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
-        code = exc.response.get("Error", {}).get("Code")
-        if status == 404 or code in {"404", "NoSuchKey", "NotFound"}:
+        if _is_not_found(exc):
             return False
         raise _service_error("verificação de objeto", exc) from exc
     except BotoCoreError as exc:
@@ -118,12 +128,29 @@ async def upload_profile_picture(file: UploadFile, user_id: int) -> str:
             detail="Formato inválido. Use JPG, PNG ou WEBP.",
         )
 
+    content = bytearray()
+    limit = app.config.PROFILE_IMAGE_MAX_SIZE_MB * 1024 * 1024
+    while chunk := await file.read(1024 * 1024):
+        content.extend(chunk)
+        if len(content) > limit:
+            raise HTTPException(413, f"A foto excede {app.config.PROFILE_IMAGE_MAX_SIZE_MB} MB")
+
+    if not content:
+        raise HTTPException(400, "Arquivo vazio")
+
+    try:
+        with Image.open(BytesIO(content)) as image:
+            image.verify()
+            actual_format = image.format
+    except (UnidentifiedImageError, OSError, ValueError) as exc:
+        raise HTTPException(400, "Arquivo de imagem inválido ou corrompido") from exc
+
+    expected_formats = {"image/jpeg": "JPEG", "image/png": "PNG", "image/webp": "WEBP"}
+    if actual_format != expected_formats[file.content_type]:
+        raise HTTPException(400, "O conteúdo do arquivo não corresponde ao formato informado")
+
     extension = ALLOWED_CONTENT_TYPES[file.content_type]
-
     s3_key = f"profile-images/users/{user_id}/{uuid4()}{extension}"
-
-    content = await file.read()
-
-    upload_bytes(content, s3_key, file.content_type)
+    upload_bytes(bytes(content), s3_key, file.content_type)
 
     return s3_key

@@ -65,6 +65,12 @@ Formatos aceitos:
 - PNG;
 - WEBP.
 
+### `GET /users/me/profile-image`
+
+Valida o JWT, lê a key da foto do usuário autenticado e faz streaming do objeto
+privado do S3. Retorna `404` quando o usuário não possui foto. A resposta de
+`GET /users/me` informa essa rota interna, sem expor key ou URL do S3.
+
 ## Fluxo de cadastro e login
 
 1. O navegador envia os dados para `/auth/register`.
@@ -92,7 +98,8 @@ detalhe expõem essas rotas da API, nunca uma key ou URL pública direta do S3.
 2. Ao salvar, a página chama `PATCH /users/me`.
 3. Se um arquivo foi selecionado, chama também a rota de upload.
 4. O backend envia o objeto ao S3 e persiste sua chave no banco.
-5. A página `/me` recebe `profile_picture_url` e a usa no elemento de imagem.
+5. A página recebe `profile_picture_url` com a rota interna da API.
+6. O JavaScript busca a imagem com JWT, cria uma Blob URL e a usa no elemento.
 
 ## Documentação automática
 

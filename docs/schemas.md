@@ -79,8 +79,8 @@ Resposta do cadastro e das rotas de usuário.
 | `username` | string |
 | `email` | e-mail |
 | `description` | string ou `null` |
-| `profile_picture_s3_key` | string ou `null` |
-| `profile_picture_url` | string ou `null`, calculado |
+| `profile_picture_url` | string ou `null`, rota protegida da API |
+| `created_at` | datetime |
 
 Exemplo:
 
@@ -91,9 +91,9 @@ Exemplo:
   "username": "maria",
   "email": "maria@example.com",
   "description": "Estudante",
-  "profile_picture_s3_key": "profile-images/users/1/arquivo.jpg",
-  "profile_picture_url": "https://question-place-storage.s3.us-east-1.amazonaws.com/profile-images/users/1/arquivo.jpg"
+  "profile_picture_url": "/users/me/profile-image",
+  "created_at": "2026-07-07T12:00:00Z"
 }
 ```
 
-`password_hash` e `created_at` não são expostos por esse contrato.
+`password_hash` e a key interna do S3 não são expostos por esse contrato.

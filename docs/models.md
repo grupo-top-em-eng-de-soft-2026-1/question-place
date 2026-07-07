@@ -26,8 +26,8 @@ A senha original não é persistida. Durante o cadastro, ela passa pelo
 profile-images/users/42/550e8400-e29b-41d4-a716-446655440000.jpg
 ```
 
-A URL é pré-assinada por padrão. Se esse recurso for desativado, a URL completa
-é calculada usando `AWS_S3_PUBLIC_BASE_URL`.
+A key não é devolvida pela API. `UserResponse` informa apenas a rota protegida
+`/users/me/profile-image`, que exige JWT e faz streaming do S3.
 
 ## `media_objects`
 

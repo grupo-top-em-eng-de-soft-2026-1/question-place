@@ -86,12 +86,12 @@ A chave segue o formato:
 profile-images/users/<user_id>/<uuid>.<extensão>
 ```
 
-O arquivo inteiro é lido em memória e enviado com `put_object`. A versão atual
-não impõe limite de tamanho, não inspeciona o conteúdo real do arquivo e não
-remove a imagem anterior quando uma nova foto é enviada.
+O conteúdo é limitado por `PROFILE_IMAGE_MAX_SIZE_MB`, validado pelo Pillow e
+enviado com `put_object`. Depois do commit da nova key, a imagem anterior é
+removida; uma falha no commit remove o novo objeto para evitar lixo órfão.
 
-Depois do upload, a rota salva a chave no campo
-`profile_picture_s3_key`. Por padrão, `UserResponse` gera uma URL pré-assinada.
+`UserResponse` retorna somente `/users/me/profile-image`. Essa rota valida o
+JWT e faz streaming do objeto privado pelo FastAPI.
 
 ## Processamento de mídia
 

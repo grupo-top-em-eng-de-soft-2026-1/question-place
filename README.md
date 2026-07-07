@@ -37,6 +37,11 @@ guarda apenas metadados e chaves S3. Downloads continuam protegidos pelas rotas
 `/media`: depois de validar o proprietário, a API redireciona para uma URL S3
 pré-assinada de curta duração (ou faz streaming quando essa opção é desativada).
 
+A foto de perfil segue um fluxo mais restrito: `UserResponse` retorna somente
+`/users/me/profile-image`. O frontend chama essa rota com JWT, recebe a imagem
+por streaming e cria uma Blob URL local. A key S3 permanece apenas no banco e
+nenhuma URL S3 da foto é exposta ao navegador.
+
 Mais detalhes:
 
 - [Estrutura do projeto](docs/project-structure.md)
@@ -173,12 +178,13 @@ ficam no S3 e os diretórios temporários são apagados após cada operação.
 | `DATABASE_URL` | URL de conexão usada pelo SQLAlchemy |
 | `AWS_REGION` | Região do cliente S3 |
 | `AWS_S3_BUCKET_NAME` | Bucket usado por fotos e mídias da biblioteca |
-| `AWS_S3_PUBLIC_BASE_URL` | Base das fotos quando URLs pré-assinadas estão desativadas |
+| `AWS_S3_PUBLIC_BASE_URL` | Configuração legada; não usada para fotos protegidas |
 | `AWS_S3_MEDIA_PREFIX` | Prefixo das mídias da biblioteca no bucket |
 | `AWS_S3_USE_PRESIGNED_URLS` | Usa redirects temporários para objetos privados |
 | `AWS_S3_PRESIGNED_EXPIRES_SECONDS` | Validade das URLs pré-assinadas |
 | `MEDIA_TEMP_PATH` | Diretório local descartável usado no processamento |
 | `MAX_UPLOAD_SIZE_MB` | Limite de cada upload (padrão: 500 MB) |
+| `PROFILE_IMAGE_MAX_SIZE_MB` | Limite da foto de perfil (padrão: 10 MB) |
 | `JWT_SECRET_KEY` | Segredo usado para assinar os tokens |
 | `JWT_ALGORITHM` | Algoritmo de assinatura JWT |
 | `JWT_EXPIRE_MINUTES` | Duração do token em minutos |

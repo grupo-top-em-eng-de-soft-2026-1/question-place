@@ -33,6 +33,7 @@ match ENV:
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "500"))
+PROFILE_IMAGE_MAX_SIZE_MB = int(os.getenv("PROFILE_IMAGE_MAX_SIZE_MB", "10"))
 MEDIA_TEMP_PATH = os.getenv("MEDIA_TEMP_PATH", "/tmp/question_place_media")
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
