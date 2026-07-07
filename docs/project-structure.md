@@ -4,15 +4,19 @@
 question-place/
 ├── app/
 │   ├── models/
+│   │   ├── media.py
 │   │   └── user.py
 │   ├── routers/
 │   │   ├── auth_router.py
 │   │   ├── main_router.py
+│   │   ├── media_router.py
 │   │   └── user_router.py
 │   ├── schemas/
+│   │   ├── media_schema.py
 │   │   └── user_schema.py
 │   ├── services/
 │   │   ├── jwt_service.py
+│   │   ├── media_service.py
 │   │   ├── s3_service.py
 │   │   └── security_service.py
 │   ├── config.py
@@ -37,7 +41,7 @@ question-place/
 2. cria as tabelas SQLAlchemy ausentes;
 3. instancia o FastAPI;
 4. monta arquivos estáticos em `/static`;
-5. registra os routers de páginas, autenticação e usuários.
+5. registra os routers de páginas, autenticação, usuários e mídia.
 
 O alvo usado pelo Uvicorn é:
 
@@ -59,8 +63,8 @@ modelos.
 
 ### `app/models`
 
-Define a estrutura persistida no banco. Atualmente contém apenas o modelo
-`User`.
+Define a estrutura persistida no banco: `User` e `MediaObject`. O segundo guarda
+metadados e chaves S3, nunca o conteúdo binário.
 
 ### `app/schemas`
 
@@ -71,11 +75,13 @@ e-mail, limites dos campos editáveis e calcula a URL pública da foto.
 
 - `main_router.py`: entrega páginas HTML;
 - `auth_router.py`: cadastro e login;
-- `user_router.py`: consulta, edição e foto do usuário autenticado.
+- `user_router.py`: consulta, edição e foto do usuário autenticado;
+- `media_router.py`: CRUD e entrega protegida da biblioteca multimídia.
 
 ### `app/services`
 
-Agrupa autenticação JWT, hash de senha e integração com o S3.
+Agrupa autenticação JWT, hash de senha, integração com o S3 e processamento
+temporário de mídia com Pillow/FFmpeg.
 
 ### `templates`
 

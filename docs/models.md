@@ -1,7 +1,6 @@
 # Modelos do banco
 
-Os modelos SQLAlchemy ficam em `app/models`. A versão atual possui uma única
-tabela.
+Os modelos SQLAlchemy ficam em `app/models`.
 
 ## `users`
 
@@ -27,8 +26,23 @@ A senha original não é persistida. Durante o cadastro, ela passa pelo
 profile-images/users/42/550e8400-e29b-41d4-a716-446655440000.jpg
 ```
 
-A URL completa é calculada no schema de resposta usando
-`AWS_S3_PUBLIC_BASE_URL`.
+A URL é pré-assinada por padrão. Se esse recurso for desativado, a URL completa
+é calculada usando `AWS_S3_PUBLIC_BASE_URL`.
+
+## `media_objects`
+
+Representada por `MediaObject` em `app/models/media.py`. Mantém proprietário,
+nome, tipo, tamanho, descrição, tags, gênero e metadados técnicos. Os campos
+`storage_key`, `thumbnail_key` e `versions_json` contêm somente chaves privadas
+do S3, por exemplo:
+
+```text
+media/users/42/<uuid>/original.mp4
+media/users/42/<uuid>/thumbnail.jpg
+media/users/42/<uuid>/variants/720p.mp4
+```
+
+Nenhum caminho absoluto ou binário é salvo no banco.
 
 ## Criação das tabelas
 

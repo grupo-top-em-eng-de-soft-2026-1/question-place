@@ -9,6 +9,7 @@
 | GET | `/register` | `register.html` | Formulário de cadastro |
 | GET | `/me` | `me.html` | Exibição do perfil |
 | GET | `/me/edit` | `edit_profile.html` | Edição do perfil |
+| GET | `/library` | `library.html` | Biblioteca multimídia privada |
 
 As páginas são renderizadas sem dados de usuário. Login, cadastro e perfil usam
 `fetch` no navegador para chamar a API.
@@ -73,6 +74,17 @@ Formatos aceitos:
 5. A API devolve um JWT.
 6. O navegador salva o token em `localStorage` e abre `/me`.
 7. A tela consulta `/users/me` com o cabeçalho de autorização.
+
+## Biblioteca multimídia
+
+As rotas `POST /media`, `GET /media`, `GET/PATCH/DELETE /media/{id}` e
+`PUT /media/{id}/content` mantêm o CRUD privado por usuário. Original,
+thumbnail e variantes ficam no S3; o banco recebe somente metadados e keys.
+
+`GET /media/{id}/content` aceita `quality=1080p`, `720p` ou `480p`, e
+`GET /media/{id}/thumbnail` entrega a miniatura. Ambas validam JWT e propriedade
+antes de gerar redirect pré-assinado ou streaming. As respostas de listagem e
+detalhe expõem essas rotas da API, nunca uma key ou URL pública direta do S3.
 
 ## Fluxo de edição e imagem
 

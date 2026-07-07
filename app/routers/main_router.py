@@ -32,3 +32,8 @@ async def edit_profile_page(request: Request):
     return templater.TemplateResponse(
         request=request, name="edit_profile.html", context={}
     )
+
+
+@main_router.get("/library")
+async def library_page(request: Request):
+    return templater.TemplateResponse(request=request, name="library.html", context={})

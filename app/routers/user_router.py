@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
@@ -5,10 +7,11 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.user_schema import UserResponse, UserUpdate
 from app.services.jwt_service import get_current_user
-from app.services.s3_service import upload_profile_picture
+from app.services.s3_service import delete_object, upload_profile_picture
 from app.services.security_service import hash_password
 
 user_router = APIRouter(prefix="/users", tags=["users"])
+logger = logging.getLogger(__name__)
 
 
 @user_router.get("/me", response_model=UserResponse)
@@ -79,10 +82,22 @@ async def upload_picture(
     db: Session = Depends(get_db),
 ):
     s3_key = await upload_profile_picture(file=file, user_id=current_user.id)
-
+    old_key = current_user.profile_picture_s3_key
     current_user.profile_picture_s3_key = s3_key
-
-    db.commit()
-    db.refresh(current_user)
+    try:
+        db.commit()
+        db.refresh(current_user)
+    except Exception:
+        db.rollback()
+        try:
+            delete_object(s3_key)
+        except HTTPException:
+            logger.exception("Não foi possível limpar nova foto após falha no banco")
+        raise
+    if old_key:
+        try:
+            delete_object(old_key)
+        except HTTPException:
+            logger.exception("Não foi possível remover a foto de perfil anterior")
 
     return current_user

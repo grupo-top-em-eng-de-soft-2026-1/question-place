@@ -6,5 +6,18 @@ services:
     ports:
       - "8000:8000"
 
+    # O Compose executa apenas a aplicação local; ele não cria ou emula o S3.
+    # Defina o bucket e forneça credenciais via ambiente/perfil para fazer uploads.
+    environment:
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-}
+      AWS_S3_MEDIA_PREFIX: ${AWS_S3_MEDIA_PREFIX:-media}
+      AWS_S3_USE_PRESIGNED_URLS: ${AWS_S3_USE_PRESIGNED_URLS:-true}
+      AWS_S3_PRESIGNED_EXPIRES_SECONDS: ${AWS_S3_PRESIGNED_EXPIRES_SECONDS:-3600}
+      MEDIA_TEMP_PATH: /tmp/question_place_media
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+
     volumes:
       - .:/question_place

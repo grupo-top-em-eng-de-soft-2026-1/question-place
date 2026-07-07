@@ -48,8 +48,13 @@ alterações futuras em tabelas existentes não são aplicadas automaticamente.
 | Variável | Padrão | Finalidade |
 | --- | --- | --- |
 | `AWS_REGION` | `us-east-1` | Região usada pelo cliente Boto3 |
-| `AWS_S3_BUCKET_NAME` | vazio | Bucket que recebe as imagens |
-| `AWS_S3_PUBLIC_BASE_URL` | URL calculada | Prefixo público retornado pela API |
+| `AWS_S3_BUCKET_NAME` | vazio | Bucket que recebe fotos e mídias |
+| `AWS_S3_PUBLIC_BASE_URL` | URL calculada | Base das fotos sem URLs pré-assinadas |
+| `AWS_S3_MEDIA_PREFIX` | `media` | Prefixo das mídias da biblioteca |
+| `AWS_S3_USE_PRESIGNED_URLS` | `true` | Redireciona conteúdo para URL S3 temporária |
+| `AWS_S3_PRESIGNED_EXPIRES_SECONDS` | `3600` | Validade da URL temporária, em segundos |
+| `MEDIA_TEMP_PATH` | `/tmp/question_place_media` | Área local descartável de processamento |
+| `MAX_UPLOAD_SIZE_MB` | `500` | Limite de upload por arquivo |
 
 Quando `AWS_S3_PUBLIC_BASE_URL` não é informada, o valor é montado como:
 
@@ -58,14 +63,19 @@ https://<bucket>.s3.<região>.amazonaws.com
 ```
 
 O cliente Boto3 usa a cadeia padrão de credenciais da AWS. Na EC2, o método
-recomendado é associar uma IAM Role à instância. O processo precisa, no mínimo,
-de permissão para executar `s3:PutObject` no prefixo
-`profile-images/users/*`.
+recomendado é associar uma IAM Role à instância. O processo precisa de
+`s3:PutObject`, `s3:GetObject` e `s3:DeleteObject` nos prefixos usados e de
+`s3:ListBucket` limitado ao bucket.
 
-A aplicação não gera URLs assinadas. A URL da imagem é formada concatenando a
-base pública e a chave armazenada no banco, portanto os objetos precisam ser
-legíveis pelo navegador por meio da política adotada no bucket ou por uma
-camada pública equivalente.
+Os objetos da biblioteca permanecem privados. Suas respostas expõem somente
+rotas protegidas da API. Por padrão, depois de validar o JWT e a propriedade da
+mídia, essas rotas geram redirects para URLs pré-assinadas. Se essa opção for
+desativada, a API faz streaming do objeto. O bucket deve ter CORS compatível
+com a origem da aplicação para que o frontend use redirects pré-assinados.
+
+`MEDIA_TEMP_PATH` não é armazenamento definitivo: recebe apenas arquivos em
+processamento e cada diretório de upload é apagado ao final, inclusive em caso
+de erro. Original, thumbnail e variantes concluídas ficam no S3.
 
 ## JWT
 
@@ -90,8 +100,11 @@ JWT_SECRET_KEY=dev-secret
 JWT_ALGORITHM=HS256
 JWT_EXPIRE_MINUTES=120
 AWS_REGION=us-east-1
-AWS_S3_BUCKET_NAME=question-place-storage
-AWS_S3_PUBLIC_BASE_URL=https://question-place-storage.s3.us-east-1.amazonaws.com
+AWS_S3_BUCKET_NAME=
+AWS_S3_MEDIA_PREFIX=media
+AWS_S3_USE_PRESIGNED_URLS=true
+AWS_S3_PRESIGNED_EXPIRES_SECONDS=3600
+MEDIA_TEMP_PATH=/tmp/question_place_media
 ```
 
 Esses valores são adequados apenas para desenvolvimento. Variáveis fornecidas

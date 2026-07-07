@@ -56,9 +56,19 @@ A dependência `get_current_user`:
 O `tokenUrl` informado ao OpenAPI é `/auth/login`. Apesar da convenção OAuth2,
 essa rota recebe JSON, e não formulário `application/x-www-form-urlencoded`.
 
-## Upload de foto
+## Amazon S3
 
 Arquivo: `app/services/s3_service.py`.
+
+Centraliza upload de arquivo/bytes, download, streaming, exclusão individual ou
+em lote, verificação de existência e geração de URL pré-assinada. Erros do
+Boto3 são registrados no servidor e convertidos em respostas controladas sem
+expor detalhes do bucket ou das credenciais.
+
+O cliente usa a cadeia padrão de credenciais da AWS; em produção, as
+credenciais devem vir da IAM Role da EC2.
+
+### Upload de foto
 
 `upload_profile_picture` aceita:
 
@@ -81,4 +91,18 @@ não impõe limite de tamanho, não inspeciona o conteúdo real do arquivo e nã
 remove a imagem anterior quando uma nova foto é enviada.
 
 Depois do upload, a rota salva a chave no campo
-`profile_picture_s3_key`. A URL pública é calculada pelo `UserResponse`.
+`profile_picture_s3_key`. Por padrão, `UserResponse` gera uma URL pré-assinada.
+
+## Processamento de mídia
+
+Arquivo: `app/services/media_service.py`.
+
+Cada upload é salvo em um subdiretório temporário de `MEDIA_TEMP_PATH`. Pillow
+valida imagens e cria thumbnails; FFmpeg/ffprobe extrai metadados, cria a
+thumbnail de vídeo e gera variantes H.264/AAC em 1080p, 720p e 480p com
+`faststart`. Em seguida, original e derivados são enviados ao prefixo
+`AWS_S3_MEDIA_PREFIX` no S3.
+
+O resultado contém somente metadados e chaves S3. O diretório temporário é
+apagado automaticamente. Se um upload de múltiplos artefatos falhar no meio, o
+serviço tenta excluir do S3 os objetos que já foram enviados.

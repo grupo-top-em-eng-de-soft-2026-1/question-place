@@ -1,6 +1,8 @@
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, computed_field, field_validator
 
 import app.config
+from app.services.s3_service import create_presigned_url
 
 
 class UserCreate(BaseModel):
@@ -44,6 +46,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     description: str | None
     profile_picture_s3_key: str | None
+    created_at: datetime
 
     @computed_field
     @property
@@ -51,6 +54,8 @@ class UserResponse(BaseModel):
         if not self.profile_picture_s3_key:
             return None
 
+        if app.config.AWS_S3_USE_PRESIGNED_URLS:
+            return create_presigned_url(self.profile_picture_s3_key)
         return f"{app.config.AWS_S3_PUBLIC_BASE_URL}/{self.profile_picture_s3_key}"
 
     class Config:

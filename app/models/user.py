@@ -1,4 +1,5 @@
 from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.database import Base
@@ -24,3 +25,5 @@ class User(Base):
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    media_objects = relationship("MediaObject", back_populates="owner", cascade="all, delete-orphan")
